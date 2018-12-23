@@ -1,0 +1,16 @@
+[package]
+name        = "back-to-the-future"
+description = "Conversions between std::future::Future and futures::Future."
+version     = "0.1.0"
+keywords    = ["future", "async", "futures"]
+authors     = ["Maarten de Vries <maarten@de-vri.es>"]
+edition     = "2018"
+license     = "BSD-2-Clause"
+repository  = "https://github.com/de-vri-es/back-to-the-future"
+categories  = ["asynchronous"]
+
+[dependencies]
+futures     = "0.1"
+
+[dev-dependencies]
+tokio       = "*"
