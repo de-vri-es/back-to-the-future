@@ -1,6 +1,6 @@
 [package]
 name        = "back-to-the-future"
-version     = "0.1.1"
+version     = "0.1.2"
 description = "Conversions between std::future::Future and futures::Future."
 authors     = ["Maarten de Vries <maarten@de-vri.es>"]
 readme      = "README.md"

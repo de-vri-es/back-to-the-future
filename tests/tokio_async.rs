@@ -6,9 +6,7 @@
 use std::time::{Duration, Instant};
 use tokio::timer::Delay;
 
-use back_to_the_future::futures_await;
-use back_to_the_future::BoxIntoFutures;
-use back_to_the_future::IntoFutures;
+use back_to_the_future::{futures_await, BoxIntoFutures, IntoFutures};
 
 #[test]
 fn box_into_futures() {

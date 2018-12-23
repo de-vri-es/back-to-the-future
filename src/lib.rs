@@ -1,9 +1,9 @@
 //! # `std` and `futures` interoperability
 //! This crate implements adapters for the two different future types: [`std::future::Future`] and [`futures::Future`].
-//! You can should be able to seamlessly convert the one into the other.
-//! The aim if to be able to use new async/await syntax with existing [`futures::Future`] infrastructure.
+//! You can seamlessly convert the one into the other.
+//! The aim is to be able to use new async/await syntax with existing [`futures::Future`] infrastructure, such as tokio.
 //!
-//! Keep in mind that much of the used features are still unstable and only available on nightly with feature gates.
+//! Keep in mind that many of the used features are still unstable and only available on nightly with feature gates.
 //!
 //! A simple example:
 //! ```
@@ -14,20 +14,22 @@
 //! use std::time::{Duration, Instant};
 //! use tokio::timer::Delay;
 //!
-//! use back_to_the_future::futures_await;
-//! use back_to_the_future::BoxIntoFutures;
-//! use back_to_the_future::IntoFutures;
+//! use back_to_the_future::{futures_await, BoxIntoFutures};
 //!
 //! fn main() {
-//! 	let f = async {
-//! 		futures_await!(Delay::new(Instant::now() + Duration::new(0, 10))).unwrap();
-//! 		Ok(())
-//! 	};
-//! 	tokio::run(f.box_into_futures());
+//!   let f = async {
+//!     // Await an old futures::Future using the futures_await! macro.
+//!     // This macro wraps the future in an adapter behind the scenes.
+//!     futures_await!(Delay::new(Instant::now() + Duration::new(0, 10))).unwrap();
+//!     Ok(())
+//!   };
+//!
+//!   // Convert the std::future::Future into a futures::Future so that tokio::run can use it.
+//!   tokio::run(f.box_into_futures());
 //! }
 //! ```
 
-#![doc(html_root_url = "https://docs.rs/back_to_the_future/0.1.1")]
+#![doc(html_root_url = "https://docs.rs/back_to_the_future/0.1.2")]
 
 #![feature(arbitrary_self_types)]
 #![feature(async_await)]
