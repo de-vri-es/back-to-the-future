@@ -27,7 +27,7 @@
 //! }
 //! ```
 
-#![doc(html_root_url = "https://docs.rs/back_to_the_future/0.1.0")]
+#![doc(html_root_url = "https://docs.rs/back_to_the_future/0.1.1")]
 
 #![feature(arbitrary_self_types)]
 #![feature(async_await)]

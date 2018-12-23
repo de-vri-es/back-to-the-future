@@ -2,7 +2,9 @@
 [![crates.io](https://img.shields.io/crates/v/back-to-the-future.svg)](https://crates.io/crates/back-to-the-future)
 [![Build Status](https://travis-ci.org/de-vri-es/back-to-the-future.svg?branch=master)](https://travis-ci.org/de-vri-es/back-to-the-future)
 
-# `std` and `futures` interoperability
+# back-to-the-future
+
+## `std` and `futures` interoperability
 This crate implements adapters for the two different future types: `std::future::Future` and `futures::Future`.
 You can should be able to seamlessly convert the one into the other.
 The aim if to be able to use new async/await syntax with existing `futures::Future` infrastructure.
@@ -10,7 +12,7 @@ The aim if to be able to use new async/await syntax with existing `futures::Futu
 Keep in mind that much of the used features are still unstable and only available on nightly with feature gates.
 
 A simple example:
-```
+```rust
 #![feature(async_await)]
 #![feature(await_macro)]
 #![feature(futures_api)]
