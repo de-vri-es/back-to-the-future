@@ -29,7 +29,7 @@
 //! }
 //! ```
 
-#![doc(html_root_url = "https://docs.rs/back_to_the_future/0.1.2")]
+#![doc(html_root_url = "https://docs.rs/back_to_the_future/0.1.3")]
 
 #![feature(arbitrary_self_types)]
 #![feature(async_await)]
@@ -46,63 +46,66 @@ pub mod futures_future;
 use std::pin::Pin;
 
 #[macro_export]
-/// Macro to await a futures::Future by first wrapping it in an std::future::Future adapter.
+/// Await a futures::Future by first wrapping it in an std::future::Future adapter.
 macro_rules! futures_await {
 	($ex:expr) => { await!($crate::std_future::FutureAdapter::new($ex)) };
 }
 
-/// Trait to convert non-std futures into `std::Future`.
+/// Conversion of non-std futures into `std::Future`.
 pub trait IntoStdFuture {
 	type Output;
 
 	fn into_std_future(self) -> std_future::FutureAdapter<Self::Output>;
 }
 
-/// Trait to box, pin and convert a non-futures future into `futures::Future`.
-///
-/// This is very similar to the `IntoFutures` crate,
-/// except that it will first call `Box::pinned` to pin the future.
-pub trait BoxIntoFutures {
-	type Output;
-
-	fn box_into_futures(self) -> futures_future::FutureAdapter<Self::Output>;
-}
-
-/// Trait to convert a pinned non-futures future into `futures::Future`.
+/// Conversion of non-futures future into `futures::Future`.
 pub trait IntoFutures {
 	type Output;
 
 	fn into_futures(self) -> futures_future::FutureAdapter<Self::Output>;
 }
 
-/// Convert a futures::Future into `std::Future`.
+/// Conversion of any non-futures future into `futures::Future`.
+///
+/// This is very similar to the `IntoFutures` trait, except that it will first
+/// box the future to circumvent any movability and lifetime requirements.
+pub trait BoxIntoFutures {
+	type Output;
+
+	fn box_into_futures(self) -> futures_future::FutureAdapter<Self::Output>;
+}
+
 impl<T: futures::IntoFuture> IntoStdFuture for T {
 	type Output = T::Future;
 
+	/// Convert any [`futures::Future`] into a [`std::Future`].
 	fn into_std_future(self) -> std_future::FutureAdapter<Self::Output> {
 		std_future::FutureAdapter::new(self.into_future())
 	}
 }
 
-/// Box, pin and convert an `std::future::Future` into a `futures::Future`.
-impl<F> BoxIntoFutures for F where
-	F: std::future::Future,
-{
-	type Output = Pin<Box<F>>;
-
-	fn box_into_futures(self) -> futures_future::FutureAdapter<Self::Output> {
-		futures_future::FutureAdapter::new(Box::pinned(self))
-	}
-}
-
-/// Convert an `std::future::Future` into a `futures::Future`.
 impl<P, F> IntoFutures for Pin<P> where
 	P: std::ops::Deref<Target = F>,
 	F: std::future::Future,
 {
 	type Output = Pin<P>;
 
+	/// Convert a pinned [`std::future::Future`] into a [`futures::Future`].
 	fn into_futures(self) -> futures_future::FutureAdapter<Self::Output> {
 		futures_future::FutureAdapter::new(self)
+	}
+}
+
+impl<F> BoxIntoFutures for F where
+	F: std::future::Future,
+{
+	type Output = Pin<Box<F>>;
+
+	/// Convert any [`std::future::Future`] into a [`futures::Future`].
+	///
+	/// To enable the conversion, it is boxed and pinned.
+	/// If your future is already pinned, prefer using [`IntoFutures::into_future`]
+	fn box_into_futures(self) -> futures_future::FutureAdapter<Self::Output> {
+		futures_future::FutureAdapter::new(Box::pinned(self))
 	}
 }

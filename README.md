@@ -5,9 +5,9 @@
 # back-to-the-future
 
 ## `std` and `futures` interoperability
-This crate implements adapters for the two different future types: [`std::future::Future`] and [`futures::Future`].
+This crate implements adapters for the two different future types: `std::future::Future` and `futures::Future`.
 You can seamlessly convert the one into the other.
-The aim is to be able to use new async/await syntax with existing [`futures::Future`] infrastructure, such as tokio.
+The aim is to be able to use new async/await syntax with existing `futures::Future` infrastructure, such as tokio.
 
 Keep in mind that many of the used features are still unstable and only available on nightly with feature gates.
 
