@@ -1,16 +1,20 @@
 [package]
 name        = "back-to-the-future"
-description = "Conversions between std::future::Future and futures::Future."
 version     = "0.1.0"
-keywords    = ["future", "async", "futures"]
+description = "Conversions between std::future::Future and futures::Future."
 authors     = ["Maarten de Vries <maarten@de-vri.es>"]
+readme      = "README.md"
+keywords    = ["future", "async", "futures"]
 edition     = "2018"
 license     = "BSD-2-Clause"
 repository  = "https://github.com/de-vri-es/back-to-the-future"
 categories  = ["asynchronous"]
 
+[badges]
+travis-ci = { repository = "rust-lang/libc" }
+
 [dependencies]
 futures     = "0.1"
 
 [dev-dependencies]
-tokio       = "*"
+tokio       = "0.1"
