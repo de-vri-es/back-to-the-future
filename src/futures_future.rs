@@ -1,31 +1,16 @@
+//! Provides the [`futures::Future`] interface for compatible types.
+//!
+//! Currently, only types implementing `std::future::Future` are supported.
+
 use std::sync::Arc;
 use std::pin::Pin;
 
-pub struct FutureAdapter<Inner> {
-	inner: Inner,
-}
-
-impl<Inner> FutureAdapter<Inner> {
-	pub fn new(inner: Inner) -> Self {
-		Self{inner}
-	}
-
-	pub fn inner(&self) -> &Inner {
-		&self.inner
-	}
-
-	pub fn inner_mut(&mut self) -> &mut Inner {
-		&mut self.inner
-	}
-
-	pub fn into_inner(self) -> Inner {
-		self.inner
-	}
-}
+/// Adapter providing the [`futures::Future`] interface for other future types.
+pub struct FutureAdapter<Inner>(pub Inner);
 
 impl<Inner> FutureAdapter<Pin<Box<Inner>>> {
 	pub fn pinned(inner: Inner) -> Self {
-		Self{inner: Box::pinned(inner)}
+		Self(Box::pinned(inner))
 	}
 }
 
@@ -50,7 +35,7 @@ impl<Pointer, Future, Item, Error> futures::Future for FutureAdapter<Pin<Pointer
 	fn poll(&mut self) -> futures::Poll<Self::Item, Self::Error> {
 		let wake = unsafe { std::task::local_waker(Arc::new(TaskWaker{task: futures::task::current()})) };
 
-		match self.inner_mut().as_mut().poll(&wake) {
+		match self.0.as_mut().poll(&wake) {
 			std::task::Poll::Pending         => Ok(futures::Async::NotReady),
 			std::task::Poll::Ready(Ok(val))  => Ok(futures::Async::Ready(val)),
 			std::task::Poll::Ready(Err(err)) => Err(err),

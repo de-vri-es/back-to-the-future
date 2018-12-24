@@ -48,10 +48,10 @@ use std::pin::Pin;
 #[macro_export]
 /// Await a futures::Future by first wrapping it in an std::future::Future adapter.
 macro_rules! futures_await {
-	($ex:expr) => { await!($crate::std_future::FutureAdapter::new($ex)) };
+	($ex:expr) => { await!($crate::IntoStdFuture::into_std_future($ex)) };
 }
 
-/// Conversion of non-std futures into `std::Future`.
+/// Conversion of non-std futures into `std::future::Future`.
 pub trait IntoStdFuture {
 	type Output;
 
@@ -76,11 +76,11 @@ pub trait BoxIntoFutures {
 }
 
 impl<T: futures::IntoFuture> IntoStdFuture for T {
-	type Output = T::Future;
+	type Output = futures::executor::Spawn<T::Future>;
 
-	/// Convert any [`futures::Future`] into a [`std::Future`].
+	/// Convert any [`futures::Future`] into a [`std::future::Future`].
 	fn into_std_future(self) -> std_future::FutureAdapter<Self::Output> {
-		std_future::FutureAdapter::new(self.into_future())
+		std_future::FutureAdapter(futures::executor::spawn(self.into_future()))
 	}
 }
 
@@ -92,7 +92,7 @@ impl<P, F> IntoFutures for Pin<P> where
 
 	/// Convert a pinned [`std::future::Future`] into a [`futures::Future`].
 	fn into_futures(self) -> futures_future::FutureAdapter<Self::Output> {
-		futures_future::FutureAdapter::new(self)
+		futures_future::FutureAdapter(self)
 	}
 }
 
@@ -104,8 +104,8 @@ impl<F> BoxIntoFutures for F where
 	/// Convert any [`std::future::Future`] into a [`futures::Future`].
 	///
 	/// To enable the conversion, it is boxed and pinned.
-	/// If your future is already pinned, prefer using [`IntoFutures::into_future`]
+	/// If your future is already pinned, prefer using [`IntoFutures`]
 	fn box_into_futures(self) -> futures_future::FutureAdapter<Self::Output> {
-		futures_future::FutureAdapter::new(Box::pinned(self))
+		futures_future::FutureAdapter(Box::pinned(self))
 	}
 }
