@@ -36,7 +36,7 @@ impl<F, Item, Error> FutureAdapter<futures::executor::Spawn<F>> where
 
 /// New style future implementation for old style futures.
 impl<F, Item, Error> std::future::Future for FutureAdapter<futures::executor::Spawn<F>> where
-	F: futures::Future<Item=Item, Error=Error> + std::pin::Unpin,
+	F: futures::Future<Item=Item, Error=Error> + std::marker::Unpin,
 {
 	type Output = Result<Item, Error>;
 

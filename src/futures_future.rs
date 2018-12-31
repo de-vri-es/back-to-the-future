@@ -9,8 +9,8 @@ use std::pin::Pin;
 pub struct FutureAdapter<Inner>(pub Inner);
 
 impl<Inner> FutureAdapter<Pin<Box<Inner>>> {
-	pub fn pinned(inner: Inner) -> Self {
-		Self(Box::pinned(inner))
+	pub fn pin(inner: Inner) -> Self {
+		Self(Box::pin(inner))
 	}
 }
 

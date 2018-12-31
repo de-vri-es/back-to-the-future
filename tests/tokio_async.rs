@@ -1,7 +1,6 @@
 #![feature(async_await)]
 #![feature(await_macro)]
 #![feature(futures_api)]
-#![feature(pin)]
 
 use std::time::{Duration, Instant};
 use tokio::timer::Delay;
@@ -23,5 +22,5 @@ fn into_futures() {
 		futures_await!(Delay::new(Instant::now() + Duration::new(0, 10))).unwrap();
 		Ok(())
 	};
-	tokio::run(Box::pinned(f).into_futures());
+	tokio::run(Box::pin(f).into_futures());
 }

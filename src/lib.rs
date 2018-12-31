@@ -36,7 +36,6 @@
 #![feature(await_macro)]
 #![feature(futures_api)]
 #![feature(never_type)]
-#![feature(pin)]
 #![feature(trait_alias)]
 #![feature(specialization)]
 
@@ -106,6 +105,6 @@ impl<F> BoxIntoFutures for F where
 	/// To enable the conversion, it is boxed and pinned.
 	/// If your future is already pinned, prefer using [`IntoFutures`]
 	fn box_into_futures(self) -> futures_future::FutureAdapter<Self::Output> {
-		futures_future::FutureAdapter(Box::pinned(self))
+		futures_future::FutureAdapter(Box::pin(self))
 	}
 }
