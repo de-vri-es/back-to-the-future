@@ -1,9 +1,9 @@
 //! Provides the [`futures::Future`] interface for compatible types.
 //!
 //! Currently, only types implementing `std::future::Future` are supported.
-
 use std::sync::Arc;
 use std::pin::Pin;
+use super::arc_wake::ArcWake;
 
 /// Adapter providing the [`futures::Future`] interface for other future types.
 pub struct FutureAdapter<Inner>(pub Inner);
@@ -18,7 +18,7 @@ struct TaskWaker {
 	task: futures::task::Task,
 }
 
-impl std::task::Wake for TaskWaker {
+impl ArcWake for TaskWaker {
 	fn wake(arc_self: &Arc<Self>) {
 		arc_self.task.notify();
 	}
@@ -33,7 +33,7 @@ impl<Pointer, Future, Item, Error> futures::Future for FutureAdapter<Pin<Pointer
 	type Error = Error;
 
 	fn poll(&mut self) -> futures::Poll<Self::Item, Self::Error> {
-		let wake = unsafe { std::task::local_waker(Arc::new(TaskWaker{task: futures::task::current()})) };
+		let wake = ArcWake::into_waker(Arc::new(TaskWaker{task: futures::task::current()}));
 
 		match self.0.as_mut().poll(&wake) {
 			std::task::Poll::Pending         => Ok(futures::Async::NotReady),
