@@ -40,7 +40,7 @@ impl<F, Item, Error> std::future::Future for FutureAdapter<futures::executor::Sp
 {
 	type Output = Result<Item, Error>;
 
-	fn poll(self: Pin<&mut Self>, waker: &std::task::Waker) -> std::task::Poll<Self::Output> {
-		Pin::get_mut(self).poll(waker)
+	fn poll(self: Pin<&mut Self>, context: &mut std::task::Context) -> std::task::Poll<Self::Output> {
+		Pin::get_mut(self).poll(context.waker())
 	}
 }

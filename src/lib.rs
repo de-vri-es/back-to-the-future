@@ -41,7 +41,6 @@
 
 pub mod std_future;
 pub mod futures_future;
-mod arc_wake;
 
 use std::pin::Pin;
 
