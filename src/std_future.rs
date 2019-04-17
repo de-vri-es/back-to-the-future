@@ -23,8 +23,8 @@ impl futures::executor::Notify for WakerNotifier {
 impl<F, Item, Error> FutureAdapter<futures::executor::Spawn<F>> where
 	F: futures::Future<Item=Item, Error=Error>,
 {
-	fn poll(&mut self, waker: &std::task::LocalWaker) -> std::task::Poll<Result<Item, Error>> {
-		let notify = futures::executor::NotifyHandle::from(Arc::new(WakerNotifier{waker: waker.clone().into_waker()}));
+	fn poll(&mut self, waker: &std::task::Waker) -> std::task::Poll<Result<Item, Error>> {
+		let notify = futures::executor::NotifyHandle::from(Arc::new(WakerNotifier{waker: waker.clone()}));
 
 		match self.0.poll_future_notify(&notify, 0) {
 			Ok(futures::Async::NotReady)   => std::task::Poll::Pending,
@@ -40,7 +40,7 @@ impl<F, Item, Error> std::future::Future for FutureAdapter<futures::executor::Sp
 {
 	type Output = Result<Item, Error>;
 
-	fn poll(self: Pin<&mut Self>, waker: &std::task::LocalWaker) -> std::task::Poll<Self::Output> {
-		Pin::get_mut(self).poll(waker)
+	fn poll(self: Pin<&mut Self>, context: &mut std::task::Context) -> std::task::Poll<Self::Output> {
+		Pin::get_mut(self).poll(context.waker())
 	}
 }
