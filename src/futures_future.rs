@@ -19,23 +19,33 @@ struct TaskWaker {
 }
 
 const TASK_WAKER_VTABLE : RawWakerVTable = RawWakerVTable::new(
-	clone_task_waker,
-	drop_task_waker,
-	wake_task_waker,
+	task_waker_clone,
+	task_waker_wake,
+	task_waker_wake_by_ref,
+	task_waker_drop,
 );
 
-unsafe fn clone_task_waker(data: *const ()) -> RawWaker {
+/// Clone the task waker from a raw pointer.
+unsafe fn task_waker_clone(data: *const ()) -> RawWaker {
 	let data = &*(data as *const TaskWaker);
 	TaskWaker::into_raw_waker(data.task.clone())
 }
 
-unsafe fn drop_task_waker(data: *const ()) {
+/// Drop the task waker from a raw pointer.
+unsafe fn task_waker_drop(data: *const ()) {
 	Box::from_raw(data as *mut TaskWaker);
 }
 
-unsafe fn wake_task_waker(data: *const ()) {
+/// Wake the task waker from a raw pointer, without dropping the waker.
+unsafe fn task_waker_wake_by_ref(data: *const ()) {
 	let data = &*(data as *const TaskWaker);
 	data.task.notify();
+}
+
+/// Wake the task waker from a raw pointer, and then drop it.
+unsafe fn task_waker_wake(data: *const ()) {
+	task_waker_wake_by_ref(data);
+	task_waker_drop(data);
 }
 
 impl TaskWaker {
@@ -45,7 +55,7 @@ impl TaskWaker {
 	}
 
 	fn into_waker(task: futures::task::Task) -> std::task::Waker {
-		unsafe { std::task::Waker::new_unchecked(TaskWaker::into_raw_waker(task)) }
+		unsafe { std::task::Waker::from_raw(TaskWaker::into_raw_waker(task)) }
 	}
 }
 

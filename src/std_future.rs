@@ -15,7 +15,7 @@ struct WakerNotifier {
 
 impl futures::executor::Notify for WakerNotifier {
 	fn notify(&self, _id: usize) {
-		self.waker.wake();
+		self.waker.wake_by_ref();
 	}
 }
 
