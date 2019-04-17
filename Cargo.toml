@@ -1,14 +1,15 @@
 [package]
-name        = "back-to-the-future"
-version     = "0.1.5"
-description = "Conversions between std::future::Future and futures::Future."
-authors     = ["Maarten de Vries <maarten@de-vri.es>"]
-readme      = "README.md"
-keywords    = ["future", "async", "futures"]
-edition     = "2018"
-license     = "BSD-2-Clause"
-repository  = "https://github.com/de-vri-es/back-to-the-future"
-categories  = ["asynchronous"]
+name          = "back-to-the-future"
+version       = "0.1.6"
+description   = "Conversions between std::future::Future and futures::Future."
+authors       = ["Maarten de Vries <maarten@de-vri.es>"]
+readme        = "README.md"
+keywords      = ["future", "async", "futures"]
+edition       = "2018"
+license       = "BSD-2-Clause"
+repository    = "https://github.com/de-vri-es/back-to-the-future"
+documentation = "https://docs.rs/back-to-the-future"
+categories    = ["asynchronous"]
 
 [badges]
 travis-ci = { repository = "rust-lang/libc" }
