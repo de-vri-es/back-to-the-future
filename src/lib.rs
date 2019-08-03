@@ -30,12 +30,8 @@
 
 #![doc(html_root_url = "https://docs.rs/back_to_the_future/0.1.3")]
 
-#![feature(arbitrary_self_types)]
 #![feature(async_await)]
 #![feature(await_macro)]
-#![feature(never_type)]
-#![feature(trait_alias)]
-#![feature(specialization)]
 
 pub mod std_future;
 pub mod futures_future;
