@@ -8,7 +8,6 @@
 //! A simple example:
 //! ```
 //! #![feature(async_await)]
-//! #![feature(await_macro)]
 //!
 //! use std::time::{Duration, Instant};
 //! use tokio::timer::Delay;
@@ -31,7 +30,6 @@
 #![doc(html_root_url = "https://docs.rs/back_to_the_future/0.1.3")]
 
 #![feature(async_await)]
-#![feature(await_macro)]
 
 pub mod std_future;
 pub mod futures_future;
@@ -41,7 +39,7 @@ use std::pin::Pin;
 #[macro_export]
 /// Await a futures::Future by first wrapping it in an std::future::Future adapter.
 macro_rules! futures_await {
-	($ex:expr) => { await!($crate::IntoStdFuture::into_std_future($ex)) };
+	($ex:expr) => { $crate::IntoStdFuture::into_std_future($ex).await };
 }
 
 /// Conversion of non-std futures into `std::future::Future`.

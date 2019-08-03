@@ -1,5 +1,4 @@
 #![feature(async_await)]
-#![feature(await_macro)]
 
 use std::time::{Duration, Instant};
 use tokio::timer::Delay;
