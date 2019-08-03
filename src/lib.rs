@@ -9,7 +9,6 @@
 //! ```
 //! #![feature(async_await)]
 //! #![feature(await_macro)]
-//! #![feature(futures_api)]
 //!
 //! use std::time::{Duration, Instant};
 //! use tokio::timer::Delay;
@@ -34,7 +33,6 @@
 #![feature(arbitrary_self_types)]
 #![feature(async_await)]
 #![feature(await_macro)]
-#![feature(futures_api)]
 #![feature(never_type)]
 #![feature(trait_alias)]
 #![feature(specialization)]
